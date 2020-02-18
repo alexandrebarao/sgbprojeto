@@ -5,29 +5,37 @@
  */
 package contasbancarias;
 
-import java.util.Date;
+import banco.Banco;
+import java.util.*;
+import java.text.SimpleDateFormat;
+
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+
 
 /**
  *
  * @author Administrator
  */
 public class ContaPrazo extends Conta {
-    private Date dataCriacaoMovimento;
+    private LocalDate dataCriacaoMovimento;// dataUltimoDeposito
     private double taxaJuro;
     private boolean podeDepositar; 
     
-    public ContaPrazo() {
+    public ContaPrazo(Banco b) {
+        super(b);
         podeDepositar = true;
+        taxaJuro = 0.01;
     }
 
     @Override
     public boolean depositar(double valor) {
         boolean estado = false;
         if ( podeDepositar )  { // o mesmo que if ( podeDepositar = true ) 
-            
             super.depositar(valor);
+            dataCriacaoMovimento = getBanco().getDataSistema();
             // gerar movimento... na classe abstracta
-            
             podeDepositar = false;
             estado = true;
         }
@@ -39,19 +47,40 @@ public class ContaPrazo extends Conta {
     @Override
     public boolean levantar(double valor) {
         
+        boolean estado;
+        
         //liquidar
-        depositar(calculaJuros());
-        super.levantar(getSaldo());
-        // gerar movimento Levantar
-        podeDepositar = true;
-        return true;
+        if ( valor != saldoAcumulado() ) {
+            estado = false;
+        }   else {
+            podeDepositar = true;
+            depositar(calculaJuros()); //  +100
+            super.levantar(valor); // 1100
+            // gerar movimento Levantar
+            podeDepositar = true;
+            estado = true;
+        }
+        return estado;
     }
     
+    public double saldoAcumulado() {
+        return calculaJuros()+super.getSaldo();
+    }
+   
     private double calculaJuros() {
-        return 10; // to do 
+        long dias = ChronoUnit.DAYS.between(dataCriacaoMovimento, getBanco().getDataSistema());
+        return ( super.getSaldo() * taxaJuro * dias) ; 
+    }
+   
+    public double getSaldo() {
+        return saldoAcumulado();
+    }
+      @Override
+    public String toString() {
+        return "Conta #" + getNumero() + " " + saldoAcumulado() + " [" + dataCriacaoMovimento.toString() + "]";
     }
 
-   
+
     
     
 }

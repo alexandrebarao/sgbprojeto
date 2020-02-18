@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package contasbancarias;
+import banco.*;
 
 import java.util.Date;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  * @author Administrator
  */
 public abstract class Conta {
+    private Banco banco;
     private static int proximoNumero = 0;
     private int numero;
     private double saldo;
@@ -19,11 +21,16 @@ public abstract class Conta {
     
     // Extracto
     
-    public Conta() {
+    public Conta(Banco b) {
+        banco = b;
         ++proximoNumero;
         numero = proximoNumero;
         
         dataCriacaoConta = new Date();
+    }
+
+    public Banco getBanco() {
+        return banco;
     }
 
     public int getNumero() {
@@ -66,7 +73,7 @@ public abstract class Conta {
 
     @Override
     public String toString() {
-        return "Conta #" + numero + " [" + dataCriacaoConta.toString() + "]";
+        return "Conta #" + numero + " " + getSaldo() + " [" + dataCriacaoConta.toString() + "]";
     }
 
     public Date getDataCriacaoConta() {

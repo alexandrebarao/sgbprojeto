@@ -4,12 +4,16 @@
  * and open the template in the editor.
  */
 package contasbancarias;
-
+import banco.Banco;
 /**
  *
  * @author Administrator
  */
 public class ContaOrdem extends Conta {
+    
+    public ContaOrdem (Banco b) {
+        super(b);
+    }
     
     boolean transferir(Conta contaDestino, double valor) {
         boolean estado = true; 

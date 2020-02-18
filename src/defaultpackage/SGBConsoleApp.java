@@ -46,7 +46,7 @@ public class SGBConsoleApp {
          b.setDataSistema(2020, 3, 10);
          System.out.println(p); 
         // b.setDataSistema(d);
-      LocalDate.of
+     
         
         for ( int i = 1; i <=10; i++ ) {
             

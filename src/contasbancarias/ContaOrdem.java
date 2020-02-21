@@ -5,6 +5,7 @@
  */
 package contasbancarias;
 import banco.Banco;
+import movimentos.Transferencia;
 /**
  *
  * @author Administrator
@@ -23,7 +24,7 @@ public class ContaOrdem extends Conta {
         } else {
             levantar(valor);
             contaDestino.depositar(valor);
-            // gerar movimento Transferir para extracto
+            getExtrato().adicionaMovimento(new Transferencia(getBanco().getDataSistema(), valor, contaDestino));
         }
         return estado;
     }

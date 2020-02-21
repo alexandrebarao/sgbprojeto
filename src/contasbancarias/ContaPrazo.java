@@ -26,7 +26,7 @@ public class ContaPrazo extends Conta {
     public ContaPrazo(Banco b) {
         super(b);
         podeDepositar = true;
-        taxaJuro = 0.01;
+        taxaJuro = 0.0;
     }
 
     @Override
@@ -35,7 +35,6 @@ public class ContaPrazo extends Conta {
         if ( podeDepositar )  { // o mesmo que if ( podeDepositar = true ) 
             super.depositar(valor);
             dataCriacaoMovimento = getBanco().getDataSistema();
-            // gerar movimento... na classe abstracta
             podeDepositar = false;
             estado = true;
         }
@@ -56,7 +55,6 @@ public class ContaPrazo extends Conta {
             podeDepositar = true;
             depositar(calculaJuros()); //  +100
             super.levantar(valor); // 1100
-            // gerar movimento Levantar
             podeDepositar = true;
             estado = true;
         }
@@ -69,15 +67,20 @@ public class ContaPrazo extends Conta {
    
     private double calculaJuros() {
         long dias = ChronoUnit.DAYS.between(dataCriacaoMovimento, getBanco().getDataSistema());
-        return ( super.getSaldo() * taxaJuro * dias) ; 
+        return ( super.getSaldo() * pesquisaTaxaJuro(dias)  ) ; 
     }
    
+    public double pesquisaTaxaJuro(long dias){
+        // pesquisa intervalos de juro em função do número de dias
+        taxaJuro = getBanco().getTabelaJuros().taxaJuro(dias);
+        return taxaJuro;
+    }
     public double getSaldo() {
         return saldoAcumulado();
     }
       @Override
     public String toString() {
-        return "Conta #" + getNumero() + " " + saldoAcumulado() + " [" + dataCriacaoMovimento.toString() + "]";
+        return "Conta #" + getNumero() + " " + saldoAcumulado() + "Tx. Juro=" + taxaJuro +" [" + dataCriacaoMovimento.toString() + "]";
     }
 
 
